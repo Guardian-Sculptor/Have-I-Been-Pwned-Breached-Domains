@@ -10,7 +10,6 @@ def export_to_csv(data,domain,writer):
         email_address= email_id + "@" + domain
         writer.writerow([email_address, ', '.join(values)])
 
-
 def HIBP_call(domain,writer):
     response = requests.get(f"{HIBP_Breached_Domains_Link}{domain}", headers=HIBP_headers)
     if response.status_code == 200:
@@ -36,7 +35,6 @@ def Filename_with_date():
 
 if __name__ == "__main__":
     domains=get_domains()
-    print(domains)
     filename = Filename_with_date()
     
     csvfile = open(filename, 'w', newline='')
