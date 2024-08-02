@@ -3,26 +3,29 @@ import json
 import time
 import datetime
 import csv
-from config import HIBP_headers, HIBP_LINK
+from config import HIBP_headers, HIBP_Breached_Domains_Link, HIBP_Subscribed_Domains_Link
 
 def export_to_csv(data,domain,writer):
     for email_id, values in data.items():
         email_address= email_id + "@" + domain
         writer.writerow([email_address, ', '.join(values)])
 
+
 def HIBP_call(domain,writer):
-    response = requests.get(f"{HIBP_LINK}{domain}", headers=HIBP_headers)
+    response = requests.get(f"{HIBP_Breached_Domains_Link}{domain}", headers=HIBP_headers)
     if response.status_code == 200:
         data = response.json()
         export_to_csv(data,domain,writer)
     else:
         print(f"Error on {domain}: {response.status_code}")
 
-def read_domains():
+def get_domains():
     domains = []
-    with open('Domains.txt', 'r') as file:
-        for line in file:
-          domains.append(line.strip())
+    response = requests.get(f"{HIBP_Subscribed_Domains_Link}", headers=HIBP_headers)
+    if response.status_code == 200:
+        data = response.json()
+        for line in data:
+            domains.append(line['DomainName'].strip())
     return domains
 
 def Filename_with_date():
@@ -32,7 +35,8 @@ def Filename_with_date():
     return filename
 
 if __name__ == "__main__":
-    domains=read_domains()
+    domains=get_domains()
+    print(domains)
     filename = Filename_with_date()
     
     csvfile = open(filename, 'w', newline='')
