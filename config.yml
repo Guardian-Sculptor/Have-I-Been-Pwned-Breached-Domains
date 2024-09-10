@@ -1,0 +1,16 @@
+image: python:latest
+
+before_script:
+  - pip3 install -r requirements.txt
+
+mainJob:
+  variables:
+    HIBP_BREACHED_DOMAINS_LINK: "https://haveibeenpwned.com/api/v3/breacheddomain/"
+    HIBP_SUBSCRIBED_DOMAINS_LINK: "https://haveibeenpwned.com/api/v3/subscribeddomains"
+  secrets:
+    HIBP_API_KEY:
+
+  only:
+    - schedule
+  script:
+    - python3 HIBP.py
